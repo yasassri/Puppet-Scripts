@@ -1,0 +1,16 @@
+define elb:deploy ($target) {
+
+	file {
+	
+	ensure	=> present'
+	owner	=> $group,	
+	
+	}
+	
+	exec {
+	
+	
+	}
+
+
+}

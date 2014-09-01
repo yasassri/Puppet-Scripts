@@ -1,0 +1,6 @@
+This SCript will set an ELB with customermized Parameters
+
+How to run
+
+1. Do the necessary parameter changes in the param Class. (e.g: declaring deployment Target, host names etc.)
+2. Run Puppet apply init.pp

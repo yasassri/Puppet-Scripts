@@ -1,0 +1,17 @@
+class params {
+  
+  # ELB Configs
+  
+  $group_mgt_port = '4500'
+  $main_domain = 'wso2.as.domain'
+  $mgt_host = 'mgt.as.wso2.com'
+  $worker_host = 'as.wso2.com'
+ 
+ #Axis 2.xml Properties
+ 
+ $http_port = '80'
+ $https_port = '443'
+ 
+ notice ('This is Param Classs')
+
+}

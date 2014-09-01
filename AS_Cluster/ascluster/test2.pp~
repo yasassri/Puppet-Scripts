@@ -1,0 +1,39 @@
+$i = 0
+$array = ['A','B']
+$intqq = 0
+$values = [val1, val2, otherval]
+$broadcast = 'NONE'
+$istt = 'true'
+$istt2 = 'true'
+#$var1 = inline_template("<% @values.each do |val| -%>  @$i++ <% if @istt == @istt2 -%>This is Just Test<% end -%><% end -%>")
+
+#$var2 = template("/home/yasassri/Desktop/QA_Resources/puppet/mySCripts/ascluster/temp.erb")
+$var1 = inline_template("<%= @array[@intqq.to_i] %>")
+
+#<% @values.each do |val| -%>
+
+#<% if @istt == "true" -%>
+# Keep ntpd from panicking in the event of a large clock skew
+# when a VM guest is suspended and resumed.
+#tinker panic 0
+#<% end -%>
+
+#Some stuff with <%= val %>
+#<% end -%>
+
+notice ("This Current Location  ${var1}")
+
+define planfile ($user = $title, $content) {
+file {"/home/${user}/.plan":
+ensure => file,
+content => $content,
+mode => 0644,
+owner => $user,
+}
+}
+
+planfile {'nick':
+content => "Working on new Learning Puppet chapters. Tomorrow: upgrading
+the LP virtual machine.",
+}
+

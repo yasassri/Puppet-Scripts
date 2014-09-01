@@ -1,0 +1,36 @@
+$no_of_managers = 3
+$array = ['One','two','Three']
+
+
+define loop() {
+
+notice("Configuring The Manager Nodes!!")
+
+if ($name == $no_of_managers+1) {
+    notice("Loop Iteration Finished!!!")
+  }
+  else
+  {
+    notice("Iteration Number : $name \n")
+
+    # Doing All Stuff Here 
+    
+    $local_names = regsubst($array, '$', "-$name")
+
+	resource { $local_names: }
+
+#resource {$array:}
+
+    $next = $name + 1
+    loop { $next: }
+ }
+ }
+
+loop { "1":}
+
+define resource() {
+    $orig_name = regsubst($name, '-[0-9]+$', '')
+    # use $orig_name where you used $name before
+    notice ("The Parsed value Name : ${orig_name}\n")
+}
+

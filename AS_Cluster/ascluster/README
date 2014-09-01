@@ -1,0 +1,7 @@
+This Script will set an AS cluster with desired number of Worker/Manager Nodes and configurations.
+
+How to run
+
+1. Do the necessary parameter changes in the main manifest (init.pp). (e.g: declaring deployment Target, host names etc.)
+2. addd required myssql DB driver to the lib directory.
+3. Run Puppet apply init.pp

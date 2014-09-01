@@ -1,0 +1,7 @@
+<% @values.each_with_index do |value, idx| -%>
+
+<% id2=@i %>
+<% if idx==@i.to_i -%> If True XXXXXXXXXX <% end -%>
+<%= "server.#{idx}=#{value}:2888:3888" %>
+
+<% end -%>
