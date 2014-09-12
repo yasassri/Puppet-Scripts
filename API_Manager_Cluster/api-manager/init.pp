@@ -1,6 +1,5 @@
 
-
-
+# Parameter Class - Define all the parameters in this class
 class params {
 
 # General Settings
@@ -8,10 +7,10 @@ class params {
 # File Locations
   $deployment_target  = '/home/yasassri/Desktop/QA_Resources/puppet/DEPLOY'
   $pack_location      = '/home/yasassri/Desktop/soft/WSO2_Products/API_Manager/new'
-  $script_base_dir  = inline_template("<%= Dir.pwd %>")
+  $script_base_dir  = inline_template("<%= Dir.pwd %>") #location will be automatically picked up
 
 # DB Configurations
-  $db_type = "mysql" # add keyword "oracle" or "mysql"
+  $db_type = "mysql" #add keyword "oracle" or "mysql"
 
 # MySQL configuration details
   $mysql_server         = 'localhost'
@@ -21,7 +20,7 @@ class params {
   $oracle_server         = '192.168.10'
   $oracle_port           = '3306'
 
-# Database details
+# General Database details
 
 #Registry WSO2REGISTRY_DB
   $registry_db_name   	= 'apiregdbpuppet' # For oracle this would be the main DB name
@@ -101,7 +100,6 @@ class params {
 #######cluster details#########
   $km_domain_name = "apim.km.171"
   $gw_domain_name = "apim.gw.171"
-
   $pub_store_domain = "apim.171"
 
 ####### ELB Related Configs ###########
@@ -131,7 +129,6 @@ class params {
 
 ######### Config Files to be Changed ###########
 
-  #$configchanges = ['conf/axis2/axis2.xml','conf/carbon.xml','conf/registry.xml','conf/user-mgt.xml','conf/tomcat/catalina-server.xml','conf/datasources/master-datasources.xml']
   $configchanges = ['conf/datasources/master-datasources.xml','conf/carbon.xml','conf/registry.xml','conf/user-mgt.xml','conf/axis2/axis2.xml']
 
 }
@@ -139,48 +136,31 @@ class params {
 # Deployment Class
 class deploy inherits params {
 
-include km_deploy
-#include store_deploy
-#include publisher_deploy
+#include km_deploy
+include store_deploy
+include publisher_deploy
 #include gw_deploy
 
 }
 
 class publisher_deploy inherits params {
 
-  file {"$deployment_target/publisher-0":
-    ensure => directory;
+ loop{"301":
+    count=>301,
+    setupnode => "publisher",
+    deduct => 300
   }
-
-  exec { "Copying_publisher-0":
-
-    path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/java/bin/', # The search path used for command execution.
-    command => "cp -r $pack_location/wso2am-*/* ${deployment_target}/publisher-0/",
-    require => File["$deployment_target/publisher-0"],
-
-  }
-
-  $local_names2 = regsubst($configchanges, '$', "-1125")
-  pushTemplates{$local_names2: node_number=>0, nodes=>"publisher"}
 
 }
 
 class store_deploy inherits params{
 
-  file {"$deployment_target/store-0":
-    ensure => directory;
-  }
-
-  exec { "Copying_store-0":
-
-    path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/java/bin/', # The search path used for command execution.
-    command => "cp -r $pack_location/wso2am-*/* ${deployment_target}/store-0/",
-    require => File["$deployment_target/store-0"],
+  loop{"201":
+    count=>201,
+    setupnode => "store",
+    deduct => 200
 
   }
-
-  $local_names2 = regsubst($configchanges, '$', "-1126")
-  pushTemplates{$local_names2: node_number=>0, nodes=>"store"}
 
 }
 
@@ -296,7 +276,7 @@ define loop($count,$setupnode,$deduct) {
     exec { "Copying_patches_$setupnode-$number":
 
       path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/java/bin/', # The search path used for command execution.
-      command => "cp -r ${params::script_base_dir}/libs/patches/* ${params::deployment_target}/$setupnode-$number/repository/components/patches/",
+      command => "rsync -r ${params::script_base_dir}/libs/patches/patch0123 ${params::deployment_target}/$setupnode-$number/repository/components/patches/",
       #onlyif => "/usr/bin/test -e ${params::script_base_dir}/libs/patches/p*",
       #notify          => Notify['${params::script_base_dir}/libs/patches/xx*  found'],
       require => Exec["Copying_$setupnode-$number"]
