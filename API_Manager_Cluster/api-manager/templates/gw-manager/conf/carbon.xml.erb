@@ -42,12 +42,12 @@
        This is will become part of the End Point Reference of the
        services deployed on this server instance.
     -->
-   <HostName><%= @km_manager_hosts[@node_number.to_i-1] %></HostName>
+   <HostName><%= @gw_manager_hosts[@node_number.to_i-1] %></HostName>
 
     <!--
     Host name to be used for the Carbon management console
     -->
-    <MgtHostName><%= @km_manager_hosts[0] %></MgtHostName>
+    <MgtHostName><%= @gw_manager_hosts[@node_number.to_i-1] %></MgtHostName>
 
     <!--
         The URL of the back end server. This is where the admin services are hosted and
@@ -109,7 +109,7 @@
          the define value + Offset.
          e.g. Offset=2 and HTTPS port=9443 will set the effective HTTPS port to 9445
          -->
-        <Offset><%= @km_manager_offsets[@node_number.to_i-1] %></Offset>
+        <Offset><%= @gw_manager_offsets[@node_number.to_i-1] %></Offset>
 
         <!-- The JMX Ports -->
         <JMX>

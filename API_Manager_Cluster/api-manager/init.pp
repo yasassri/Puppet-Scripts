@@ -34,13 +34,13 @@ class params {
 
   # Config Registry - WSO2CONFIGREG_DB
 
-  $config_registry_db_name = 'testDB'
+  $config_registry_db_name = 'apim_configdb_puppet'
   $config_db_username  = 'apimuser2'
   $config_db_password  = 'wso2root'
 
   # Stat DB WSO2AM_STATS_DB
 
-  $stat_registry_db_name = 'statDB'
+  $stat_registry_db_name = 'apim_statDB_puppet'
   $stat_db_username  = 'apimuser2'
   $stat_db_password  = 'wso2root'
 
@@ -52,68 +52,72 @@ class params {
 ##################################
 #### KM Related Configs ##########
 
-  $km_clustering = true # to create worker Manager Nodes for Key Manager
+  $km_clustering = true
 
   # Manager Nodes Parameters only configure following if clustering true for the KM
   $km_manager_offsets             = ['1']
-  $km_manager_hosts               = ['km-manager-test.com']
-  $km_manager_ips                 = ['100.100.5.112']
-  $km_manager_local_member_ports  = ['4000']
+  $km_manager_hosts               = ['km.node-171.com']
+  $km_manager_ips                 = ['10.100.5.112']
+  $km_manager_local_member_ports  = ['4010']
 
   # Worker Nodes parameters
   $km_worker_offsets            = ['2']
-  $km_worker_hosts              = ['km-worker-test.com']
+  $km_worker_hosts              = [] # Number of Nodes are determined from the array length
   $km_worker_ips                = ['100.100.5.112']
   $km_worker_local_member_ports = ['4001']
 
 ######################################
 ##### GateWay Related Configs ########
 
-  $gw_clustering = true # to create worker Manager Nodes for Key Manager
+  $gw_clustering = true
 
 # Manager Nodes Parameters,,,, only configure following if clustering true for the Gate Way
-  $gw_manager_offsets            = ['1','2']
-  $gw_manager_hosts              = ["manager.test.com"]
-  $gw_manager_ips                = ['100.100.5.112', '100.5.2.3']
-  $gw_manager_local_member_ports = ['4000','4001']
+  $gw_manager_offsets            = ['3']
+  $gw_manager_hosts              = ["gw.node-171.com"] # Number of Nodes are determined from the array length
+  $gw_manager_ips                = ['100.100.5.112']
+  $gw_manager_local_member_ports = ['4020']
 
 # Worker Nodes parameters
   $gw_worker_offsets = ['1','2']
-  $gw_worker_hosts = []
+  $gw_worker_hosts = [] # Number of Nodes are determined from the array length
   $gw_worker_ips = ['100.100.5.112','100.5.2.3']
   $gw_worker_local_member_ports = ['4005','4006']
 
 
 #### Publisher Related Configs ########
-  $publisher_offsets            = ['1']
-  $publisher_hosts              = ['km-manager-test.com']
-  $publisher_ips                = ['100.100.5.112']
+  $publisher_offsets            = ['4']
+  $publisher_hosts              = ['km.node-171.com']
+  $publisher_ips                = ['10.100.5.112']
   $publisher_local_member_ports = ['4002']
 
 
 ###### Store Related Configs ########
-  $store_offsets            = ['1']
-  $store_hosts              = ['storehost-test.com']
-  $store_ips                = ['100.10.5.112']
+  $store_offsets            = ['5']
+  $store_hosts              = ['apim.171.store.com']
+  $store_ips                = ['10.100.5.112']
   $store_local_member_ports = ['4003']
 
 #######cluster details#########
   $km_domain_name = "apim.km.171"
   $gw_domain_name = "apim.gw.171"
-  $pub_store_domain = "apim.171"
+  $pub_store_domain = "apim.pubstore.171"
 
 ####### ELB Related Configs ########### api-manager.xml
 
-  $elb_host_ip = "192.15.12.222"
-  $elb_port = "4005"
+  $elb_host_ip = "10.100.5.112"
+  $elb_km_group_mgt_port = "4002"
+  $elb_gw_group_mgt_port = "4003"
+  $elb_store_pub_group_mgt_port = "4005"
+
   $km_cluster_domain = "apim.km.com"
+  $gw_cluster_domain = "apim.gw.com"
   $cluster_port_https = "443"
   $cluster_port_http = "80"
-  $gw_cluster_domain = "apim.gw.com"
+
 
  ############BAM Server###################
 
-  $bam_server_ip = "10.100.5.45"
+  $bam_server_ip = "10.100.5.112"
   $bam_port = "7614"
   $bam_server_username = "admin"
   $bam_server_passwd = "admin"
@@ -126,7 +130,7 @@ class params {
   $admin_passwd = "admin123#"
 
 
-######### Config Files to be Changed ###########
+######### Config Files to be Changed ####Do Not Change#######
 
   $configchanges = ['conf/datasources/master-datasources.xml','conf/carbon.xml','conf/registry.xml','conf/user-mgt.xml','conf/axis2/axis2.xml']
 
@@ -135,9 +139,9 @@ class params {
 # Deployment Class
 class deploy inherits params {
 
-#include km_deploy
-#include store_deploy
-#include publisher_deploy
+include km_deploy
+include store_deploy
+include publisher_deploy
 include gw_deploy
 
 }

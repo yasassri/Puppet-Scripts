@@ -724,10 +724,10 @@
 	<% end %>
 	<member>
                <hostName><%= @elb_host_ip %></hostName>
-                <port><%= @elb_port%></port>
+                <port><%= @elb_km_group_mgt_port%></port>
             </member>
        <member>   
-        </members>
+   </members>
 
         <!--
         Enable the groupManagement entry if you need to run this node as a cluster manager.
