@@ -73,13 +73,13 @@ class params {
 
 # Manager Nodes Parameters,,,, only configure following if clustering true for the Gate Way
   $gw_manager_offsets            = ['1','2']
-  $gw_manager_hosts              = ['gw.manager1.com','gwmanager2.com']
+  $gw_manager_hosts              = ["manager.test.com"]
   $gw_manager_ips                = ['100.100.5.112', '100.5.2.3']
   $gw_manager_local_member_ports = ['4000','4001']
 
 # Worker Nodes parameters
   $gw_worker_offsets = ['1','2']
-  $gw_worker_hosts = ['gw.worker1.com','gwworker2.com']
+  $gw_worker_hosts = []
   $gw_worker_ips = ['100.100.5.112','100.5.2.3']
   $gw_worker_local_member_ports = ['4005','4006']
 
@@ -102,14 +102,13 @@ class params {
   $gw_domain_name = "apim.gw.171"
   $pub_store_domain = "apim.171"
 
-####### ELB Related Configs ###########
+####### ELB Related Configs ########### api-manager.xml
 
   $elb_host_ip = "192.15.12.222"
   $elb_port = "4005"
   $km_cluster_domain = "apim.km.com"
   $cluster_port_https = "443"
   $cluster_port_http = "80"
-
   $gw_cluster_domain = "apim.gw.com"
 
  ############BAM Server###################
@@ -137,9 +136,9 @@ class params {
 class deploy inherits params {
 
 #include km_deploy
-include store_deploy
-include publisher_deploy
-#include gw_deploy
+#include store_deploy
+#include publisher_deploy
+include gw_deploy
 
 }
 
@@ -159,9 +158,7 @@ class store_deploy inherits params{
     count=>201,
     setupnode => "store",
     deduct => 200
-
   }
-
 }
 
 class gw_deploy inherits params {
@@ -196,9 +193,9 @@ class gw_deploy inherits params {
 
       exec { "Copying_gw_Files":
 
-        path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/java/bin/', # The search path used for command execution.
+        path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', # The search path used for command execution.
         command => "cp -r $pack_location/wso2am-*/* ${deployment_target}/gw-1/",
-        require => File["$deployment_target/gw"],
+        require => File["$deployment_target/gw-1"],
 
       }
 
@@ -239,10 +236,9 @@ class km_deploy inherits params {
 
      exec { "Copying_gw_Files":
 
-     path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/java/bin/', # The search path used for command execution.
+     path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', # The search path used for command execution.
      command => "cp -r $pack_location/wso2am-*/* ${deployment_target}/km/",
      require => File["$deployment_target/km"],
-
      }
   }
 }
@@ -266,31 +262,27 @@ define loop($count,$setupnode,$deduct) {
   #copying the Files (packs)
     exec { "Copying_$setupnode-$number":
 
-      path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/java/bin/', # The search path used for command execution.
+      path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', # The search path used for command execution.
       command => "cp -r ${params::pack_location}/wso2am-*/* ${params::deployment_target}/$setupnode-$number/",
       require => File["${params::deployment_target}/$setupnode-$number"],
-
     }
 
-    # Copying patches
-    exec { "Copying_patches_$setupnode-$number":
-
-      path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/java/bin/', # The search path used for command execution.
-      command => "rsync -r ${params::script_base_dir}/libs/patches/patch0123 ${params::deployment_target}/$setupnode-$number/repository/components/patches/",
-      #onlyif => "/usr/bin/test -e ${params::script_base_dir}/libs/patches/p*",
-      #notify          => Notify['${params::script_base_dir}/libs/patches/xx*  found'],
-      require => Exec["Copying_$setupnode-$number"]
-
-    }
-    # Copying DB drivers
-    exec { "Copying_drivers_$setupnode-$number":
-
-      path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/opt/java/bin/', # The search path used for command execution.
-      command => "cp -r ${params::script_base_dir}/libs/db_drivers/* ${params::deployment_target}/$setupnode-$number/repository/components/lib/",
-      require => Exec["Copying_$setupnode-$number"]
+    # Copying Patches
+    copy_files{"Cpy_patches_$setupnode-$number":
+    from => "${params::script_base_dir}/libs/patches/",
+    to   => "${params::deployment_target}/$setupnode-$number/repository/components/patches/",
+    node_name=> "$setupnode-$number",
+    unq_id=> "patches"
+          }
+  # Copying DB Drivers
+    copy_files{"Cpy_drivers_$setupnode-$number":
+      from => "${params::script_base_dir}/libs/db_drivers/",
+      to   => "${params::deployment_target}/$setupnode-$number/repository/components/lib/",
+      node_name=> "$setupnode-$number",
+      unq_id=> "db_drivers"
     }
 
-    $local_names = regsubst($params::configchanges, '$', "-$name")
+   $local_names = regsubst($params::configchanges, '$', "-$name")
 
     pushTemplates {$local_names:
       node_number => $number,
@@ -303,6 +295,20 @@ define loop($count,$setupnode,$deduct) {
     setupnode => "${setupnode}",
     deduct=>"${deduct}",
     }
+  }
+}
+
+define copy_files($from,$to,$node_name,$unq_id){
+
+  exec { "Cpy_${unq_id}_$node_name":
+    path    => '/usr/bin:/bin',
+    command => "rsync -r $from $to",
+    require => [
+      File["${params::deployment_target}/$node_name"],
+      Package['rsync'],
+      Exec["Copying_$node_name"]
+    ],
+
   }
 }
 
@@ -319,4 +325,8 @@ define pushTemplates($node_number,$nodes) {
   }
 }
 
+# Package dependencies
+package { 'rsync': ensure => 'installed' }
+
 include deploy
+#package{'rsync2':}

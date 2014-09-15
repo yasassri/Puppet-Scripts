@@ -286,7 +286,7 @@
 	     In distributed deployment we should configure this property in key manager node by pointing 
 	     gateway https url. Also please note that we should point gateway revoke service to key manager
 	-->
-	<RevokeAPIURL>https://${carbon.local.ip}:${https.nio.port}/revoke</RevokeAPIURL>
+	<RevokeAPIURL>https://<%= @gw_cluster_domain %>:<%= @cluster_port_https %>/revoke</RevokeAPIURL>
 	
 	<!-- Whether to encrypt tokens when storing in the Database
 	Note: If changing this value to true, change the value of <TokenPersistenceProcessor> to
@@ -380,7 +380,7 @@ org.wso2.carbon.identity.oauth.tokenprocessor.EncryptionDecryptionPersistencePro
 
     <APIPublisher>
         <DisplayURL>false</DisplayURL>
-        <URL>https://${carbon.local.ip}:${mgt.transport.https.port}/publisher</URL>
+        <URL>https://${carbon.local.ip}:<%= @cluster_port_https %>/publisher</URL>
         <!--
                This parameter specifies enabling the capability of setting API documentation level granular visibility levels.
                By default any document associate with an API will have the same permissions set as the API.With enabling below
