@@ -724,7 +724,7 @@
 	<member>
                <hostName><%= @elb_host_ip %></hostName>
                 <port><%= @elb_km_group_mgt_port%></port>
-        <member>   
+        </member>   
    </members>
 
         <!--

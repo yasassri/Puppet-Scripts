@@ -134,6 +134,7 @@ class params {
 ######### Config Files to be Changed ####Do Not Change#######
 
   $configchanges = ['conf/datasources/master-datasources.xml','conf/carbon.xml','conf/registry.xml','conf/user-mgt.xml','conf/axis2/axis2.xml','conf/api-manager.xml']
+  $gate_way_deployment_configs = ['conf/deployment/server/synapse-configs/default/api/_TokenAPI_.xml','conf/deployment/server/synapse-configs/default/api/_RevokeAPI_.xml','conf/deployment/server/synapse-configs/default/api/_AuthorizeAPI_.xml']
 
 }
 
@@ -294,6 +295,17 @@ define loop($count,$setupnode,$deduct) {
       nodes => $setupnode
     }
 
+    /*if($setupnode == "gw-manager"){
+      notice("XXXXXXXX :: $name/n")
+     $local_names2 = regsubst($params::gate_way_deployment_configs, '$', "-$name")
+      notice("YYYYYY :: $local_names2")
+      pushTemplates {$local_names2:
+        node_number => $number,
+        nodes => $setupnode
+      }
+
+}*/
+
   $next = $name + 1
     loop { $next:
     count => "${count}",
@@ -320,6 +332,7 @@ define copy_files($from,$to,$node_name,$unq_id){
 define pushTemplates($node_number,$nodes) {
 
   $orig_name = regsubst($name, '-[0-9]+$', '')
+  #notice("zzzzz :: $orig_name")
 
   file {"$params::deployment_target/${nodes}-${node_number}/repository/${orig_name}":
 

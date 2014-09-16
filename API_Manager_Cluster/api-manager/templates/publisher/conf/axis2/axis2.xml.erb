@@ -708,6 +708,8 @@
             <property name="backendServerURL" value="https://${hostName}:${httpsPort}/services/"/>
             <property name="mgtConsoleURL" value="https://${hostName}:${httpsPort}/"/>
             <property name="subDomain" value="publisher"/>
+            <property name="port.mapping.80" value="<%= 9763+@publisher_offsets[0].to_i %>"/>
+            <property name="port.mapping.443" value="<%= 9443+@publisher_offsets[0].to_i %>"/>
         </parameter>
 
         <!--
