@@ -718,16 +718,15 @@
         <members>
         <% @gw_manager_hosts.each_with_index do |mgthost, index| %>
            <member>
-               <hostName><%= mgthost %></hostName>
+                <hostName><%= mgthost %></hostName>
                 <port><%= @gw_manager_local_member_ports[index]%></port>
             </member>
 	<% end %>
-	<member>
-               <hostName><%= @elb_host_ip %></hostName>
-                <port><%= @elb_gw_group_mgt_port %></port>
-            </member>
-       <member>   
-      </members>
+		<member>
+              	 <hostName><%= @elb_host_ip %></hostName>
+                 <port><%= @elb_gw_group_mgt_port %></port>
+            	</member>
+        </members>
 
         <!--
         Enable the groupManagement entry if you need to run this node as a cluster manager.

@@ -707,7 +707,7 @@
         <parameter name="properties">
             <property name="backendServerURL" value="https://${hostName}:${httpsPort}/services/"/>
             <property name="mgtConsoleURL" value="https://${hostName}:${httpsPort}/"/>
-            <property name="subDomain" value="worker"/>
+            <property name="subDomain" value="publisher"/>
         </parameter>
 
         <!--
@@ -718,6 +718,11 @@
             <member>
                 <hostName><%= @store_ips[0] %></hostName>
                 <port><%= @store_local_member_ports[0] %></port>
+            </member>
+            
+            <member>
+                <hostName><%= @elb_host_ip %></hostName>
+                <port><%= @elb_store_pub_group_mgt_port %></port>
             </member>
         </members>
 
@@ -730,7 +735,7 @@
             <applicationDomain name="wso2.apim.domain"
                                description="APIM group"
                                agent="org.wso2.carbon.core.clustering.hazelcast.HazelcastGroupManagementAgent"
-                               subDomain="worker"
+                               subDomain="publisher"
                                port="2222"/>
         </groupManagement>
     </clustering>

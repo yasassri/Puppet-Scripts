@@ -56,15 +56,15 @@ class params {
 
   # Manager Nodes Parameters only configure following if clustering true for the KM
   $km_manager_offsets             = ['1']
-  $km_manager_hosts               = ['km.node-171.com']
+  $km_manager_hosts               = ['apim.180.km.com']
   $km_manager_ips                 = ['10.100.5.112']
-  $km_manager_local_member_ports  = ['4010']
+  $km_manager_local_member_ports  = ['4001']
 
   # Worker Nodes parameters
   $km_worker_offsets            = ['2']
   $km_worker_hosts              = [] # Number of Nodes are determined from the array length
   $km_worker_ips                = ['100.100.5.112']
-  $km_worker_local_member_ports = ['4001']
+  $km_worker_local_member_ports = ['4002']
 
 ######################################
 ##### GateWay Related Configs ########
@@ -72,10 +72,10 @@ class params {
   $gw_clustering = true
 
 # Manager Nodes Parameters,,,, only configure following if clustering true for the Gate Way
-  $gw_manager_offsets            = ['3']
-  $gw_manager_hosts              = ["gw.node-171.com"] # Number of Nodes are determined from the array length
-  $gw_manager_ips                = ['100.100.5.112']
-  $gw_manager_local_member_ports = ['4020']
+  $gw_manager_offsets            = ['2']
+  $gw_manager_hosts              = ["apim.180.gw.com"] # Number of Nodes are determined from the array length
+  $gw_manager_ips                = ['10.100.5.112']
+  $gw_manager_local_member_ports = ['4003']
 
 # Worker Nodes parameters
   $gw_worker_offsets = ['1','2']
@@ -83,35 +83,37 @@ class params {
   $gw_worker_ips = ['100.100.5.112','100.5.2.3']
   $gw_worker_local_member_ports = ['4005','4006']
 
+################################################
+############# Publisher Related Configs ########
 
-#### Publisher Related Configs ########
-  $publisher_offsets            = ['4']
-  $publisher_hosts              = ['km.node-171.com']
+  $publisher_offsets            = ['3']
+  $publisher_hosts              = ['apim.180.publisher.com']
   $publisher_ips                = ['10.100.5.112']
-  $publisher_local_member_ports = ['4002']
+  $publisher_local_member_ports = ['4004']
 
+#############################################
+########### Store Related Configs ###########
 
-###### Store Related Configs ########
-  $store_offsets            = ['5']
-  $store_hosts              = ['apim.171.store.com']
+  $store_offsets            = ['4']
+  $store_hosts              = ['apim.180.store.com']
   $store_ips                = ['10.100.5.112']
-  $store_local_member_ports = ['4003']
+  $store_local_member_ports = ['4005']
 
 #######cluster details#########
-  $km_domain_name = "apim.km.171"
-  $gw_domain_name = "apim.gw.171"
-  $pub_store_domain = "apim.pubstore.171"
+  $km_domain_name = "apim.qa.km.180"
+  $gw_domain_name = "apim.qa.gw.180"
+  $pub_store_domain = "apim.qa.storepub.180"
 
 ####### ELB Related Configs ########### api-manager.xml
 
   $elb_host_ip = "10.100.5.112"
-  $elb_km_group_mgt_port = "4002"
-  $elb_gw_group_mgt_port = "4003"
-  $elb_store_pub_group_mgt_port = "4005"
+  $elb_km_group_mgt_port = "4050"
+  $elb_gw_group_mgt_port = "4060"
+  $elb_store_pub_group_mgt_port = "4070"
 
-  $km_cluster_domain = "apim.km.com"
-  $gw_cluster_domain = "apim.gw.com"
-  $cluster_port_https = "443"
+  $km_cluster_domain = "apim.180.km.com" # Give the common host name of KM nodes api-manager.xml
+  $gw_cluster_domain = "apim.180.gw.com" # Give the common host name of gw nodes api-manager.xml
+  $cluster_port_https = "443" # elb listner Ports
   $cluster_port_http = "80"
 
 
@@ -122,7 +124,6 @@ class params {
   $bam_server_username = "admin"
   $bam_server_passwd = "admin"
 
-
 ############################################
 
   $admin_role_name ="Administrator"
@@ -132,7 +133,7 @@ class params {
 
 ######### Config Files to be Changed ####Do Not Change#######
 
-  $configchanges = ['conf/datasources/master-datasources.xml','conf/carbon.xml','conf/registry.xml','conf/user-mgt.xml','conf/axis2/axis2.xml']
+  $configchanges = ['conf/datasources/master-datasources.xml','conf/carbon.xml','conf/registry.xml','conf/user-mgt.xml','conf/axis2/axis2.xml','conf/api-manager.xml']
 
 }
 

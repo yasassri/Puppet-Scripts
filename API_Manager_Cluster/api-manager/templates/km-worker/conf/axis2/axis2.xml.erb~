@@ -715,8 +715,7 @@
            "membershipScheme" above is set to "wka"
         -->
         <members>
-        <member>
-        	<% @km_worker_hosts.each_with_index do |mgthost, index| %>
+             	<% @km_worker_hosts.each_with_index do |mgthost, index| %>
            <member>
                <hostName><%= mgthost %></hostName>
                 <port><%= @km_worker_local_member_ports[index]%></port>
@@ -724,9 +723,8 @@
 	<% end %>
 	<member>
                <hostName><%= @elb_host_ip %></hostName>
-                <port><%= @elb_port%></port>
-            </member>
-       <member>   
+                <port><%= @elb_km_group_mgt_port %></port>
+        <member>   
         </members>
 
         <!--
