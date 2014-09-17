@@ -1,4 +1,15 @@
 READ-ME.
 
-Clone the repository
-Folder struncture
+What the script can do.
+
+The script can spawn ELB fronted API-M cluster with any number of GW and KM worker/manager nodes.
+Can copy patches to all the nodes and db drivers. 
+
+How to use the script
+
+Install Puppet agent (do not need puppet master) make sure you install version 3+.
+Clone the repository and do the necessary parameter changes in the params class.
+Execute the script "puppet apply init.pp"
+
+
+
