@@ -168,7 +168,6 @@ class store_deploy inherits params{
 }
 
 class gw_deploy inherits params {
-    if($gw_clustering == true){
 
       $gw_manager_nodes = inline_template("<%= @gw_manager_hosts.length %>") #To determine number of manager nodes
       $gw_worker_nodes = inline_template("<%= @gw_worker_hosts.length %>") #To determine number of manager nodes
@@ -191,27 +190,9 @@ class gw_deploy inherits params {
 
       }
 
-    } else {
-
-      file {"$deployment_target/gw-1":
-        ensure => directory;
-      }
-
-      exec { "Copying_gw_Files":
-
-        path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', # The search path used for command execution.
-        command => "cp -r $pack_location/wso2am-*/* ${deployment_target}/gw-1/",
-        require => File["$deployment_target/gw-1"],
-
-      }
-
-      $local_names3 = regsubst($configchanges, '$', "-1126")
-      pushTemplates{$local_names3: node_number=>0, nodes=>"gw"}
-  }
 }
 
 class km_deploy inherits params {
-  if($km_clustering == true){
 
     $km_manager_nodes = inline_template("<%= @km_manager_hosts.length %>") #To determine number of manager nodes
     $km_worker_nodes = inline_template("<%= @km_worker_hosts.length %>") #To determine number of manager nodes
@@ -234,22 +215,9 @@ class km_deploy inherits params {
 
       }
 
-  } else { # if worker manager not being created
-
-    file {"$deployment_target/km":
-          ensure => directory;
-        }
-
-     exec { "Copying_gw_Files":
-
-     path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', # The search path used for command execution.
-     command => "cp -r $pack_location/wso2am-*/* ${deployment_target}/km/",
-     require => File["$deployment_target/km"],
-     }
-  }
 }
 
-# Loop for Managers
+# Loop for Spawning Members
 
 define loop($count,$setupnode,$deduct) {
 
