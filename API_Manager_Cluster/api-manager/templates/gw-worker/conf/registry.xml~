@@ -13,28 +13,40 @@
     <dbConfig name="wso2registry">
         <dataSource>jdbc/WSO2CarbonDB</dataSource>
     </dbConfig>
-    
-    <dbConfig name="govregistry">
-  	<dataSource>jdbc/WSO2REG_DB</dataSource>
-    </dbConfig>
-    
-	<remoteInstance url="https://publisher.apim-wso2.com"> 
-   		<id>gov</id>
-   		<cacheId><%= @registry_db_username %>@jdbc:mysql://<%= @mysql_server %>:<%= @mysql_port %>/<%= @registry_db_name %>?autoReconnect=true</cacheId>
-		<dbConfig>govregistry</dbConfig>
-		<readOnly>false</readOnly>
-		<enableCache>true</enableCache>
-		<registryRoot>/</registryRoot>
-	</remoteInstance>
 
-	<mount path="/_system/governance" overwrite="true">
-   	<instanceId>gov</instanceId>
-   	<targetPath>/_system/governance</targetPath>
-	</mount>
-	<mount path="/_system/config" overwrite="true">
-   	<instanceId>gov</instanceId>
-  	 <targetPath>/_system/config</targetPath>
-	</mount>
+<dbConfig name="govregistry">
+  <dataSource>jdbc/WSO2REG_DB</dataSource>
+</dbConfig>
+
+<remoteInstance url="https://192.168.18.74:9543/registry">
+   <id>gov</id>
+   <dbConfig>govregistry</dbConfig>
+   <readOnly>false</readOnly>
+   <enableCache>true</enableCache>
+   <registryRoot>/</registryRoot>
+   <% if @db_type == "oracle"%><cacheId><%= @registry_db_username %>@jdbc:oracle:thin:@<%= @oracle_server %>:<%= @oracle_port %>/<%= @registry_db_name %></cacheId><% else if @db_type == "mysql"%><cacheId><%= @registry_db_username %>@jdbc:mysql://<%= @mysql_server %>:<%= @mysql_port %>/<%= @registry_db_name %>?autoReconnect=true</cacheId><% end %>
+</remoteInstance>
+
+<mount path="/_system/governance" overwrite="true">
+   <instanceId>gov</instanceId>
+   <targetPath>/_system/governance</targetPath>
+</mount>
+
+<dbConfig name="configregistry">
+  <dataSource>jdbc/WSO2CONFIGREG_DB</dataSource>
+</dbConfig>
+<remoteInstance url="https://192.168.18.74:9643/registry">
+   <id>config</id>
+   <dbConfig>configregistry</dbConfig>
+   <readOnly>false</readOnly>
+   <enableCache>true</enableCache>
+   <registryRoot>/</registryRoot>
+   <% if @db_type == "oracle"%><cacheId><%= @config_db_username %>@jdbc:oracle:thin:@<%= @oracle_server %>:<%= @oracle_port %>/<%= @config_registry_db_name %></cacheId><% else if @db_type == "mysql"%><cacheId><%= @config_db_username %>@jdbc:mysql://<%= @mysql_server %>:<%= @mysql_port %>/<%= @config_registry_db_name %>?autoReconnect=true</cacheId><% end %>
+</remoteInstance>
+<mount path="/_system/config" overwrite="true">
+   <instanceId>config</instanceId>
+   <targetPath>/_system/apimconfig</targetPath>
+</mount>
 
     <!-- This handler provides the feature to add a simlink to a given resource -->
 

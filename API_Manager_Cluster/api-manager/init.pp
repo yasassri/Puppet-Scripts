@@ -49,6 +49,18 @@ class params {
   $apim_db_username		= 'apimuser2'
   $apim_db_password   = 'wso2root'
 
+##################LDAP Configuration###################
+
+  $connect_to_ldap  = true # use an external Ldap as the primary user store. The Default JDBC userstore wil not b connected in this case.
+  $ldap_url         = '192.168.18.76'
+  $ldap_port        = '389'
+  # Ldap Connection name properties
+  $ldap_cn    = 'wso2'
+  $ldap_dc    = ''
+  $connection_name = 'cn=admin,dc=ITIndustry,dc=sl' # This goes into the user manager.xml
+  $rootpartition_string = 'dc=ITIndustry,dc=sl' # This goes into tenent-management.xml
+
+
 ##################################
 #### KM Related Configs ##########
 
@@ -61,10 +73,10 @@ class params {
   $km_manager_local_member_ports  = ['4001']
 
   # Worker Nodes parameters
-  $km_worker_offsets            = ['2']
-  $km_worker_hosts              = [] # Number of Nodes are determined from the array length
-  $km_worker_ips                = ['100.100.5.112']
-  $km_worker_local_member_ports = ['4002']
+  $km_worker_offsets            = ['6']
+  $km_worker_hosts              = ["apim.180.km.worker.com"] # Number of Nodes are determined from the array length
+  $km_worker_ips                = ['10.100.5.112']
+  $km_worker_local_member_ports = ['4007']
 
 ######################################
 ##### GateWay Related Configs ########
@@ -78,10 +90,10 @@ class params {
   $gw_manager_local_member_ports = ['4003']
 
 # Worker Nodes parameters
-  $gw_worker_offsets = ['1','2']
-  $gw_worker_hosts = [] # Number of Nodes are determined from the array length
-  $gw_worker_ips = ['100.100.5.112','100.5.2.3']
-  $gw_worker_local_member_ports = ['4005','4006']
+  $gw_worker_offsets = ['5']
+  $gw_worker_hosts = ["apim.180.gw.worker.com"] # Number of Nodes are determined from the array length
+  $gw_worker_ips = ['10.100.5.112']
+  $gw_worker_local_member_ports = ['4006']
 
 ################################################
 ############# Publisher Related Configs ########
@@ -131,10 +143,17 @@ class params {
   $admin_passwd = "admin123#"
 
 
-######### Config Files to be Changed ####Do Not Change#######
+#########Do Not Change#######
 
-  $configchanges = ['conf/datasources/master-datasources.xml','conf/carbon.xml','conf/registry.xml','conf/user-mgt.xml','conf/axis2/axis2.xml','conf/api-manager.xml']
+  $gw_manager_nodes = inline_template("<%= @gw_manager_hosts.length %>") #To determine number of manager nodes
+  $gw_worker_nodes = inline_template("<%= @gw_worker_hosts.length %>") #To determine number of gw worker nodes
+  $km_manager_nodes = inline_template("<%= @km_manager_hosts.length %>") #To determine number of manager nodes
+  $km_worker_nodes = inline_template("<%= @km_worker_hosts.length %>") #To determine number of worker nodes
+
+
+  $configchanges = ['conf/datasources/master-datasources.xml','conf/carbon.xml','conf/registry.xml','conf/user-mgt.xml','conf/axis2/axis2.xml','conf/api-manager.xml',]
   $gate_way_deployment_configs = ['deployment/server/synapse-configs/default/api/_TokenAPI_.xml','deployment/server/synapse-configs/default/api/_RevokeAPI_.xml','deployment/server/synapse-configs/default/api/_AuthorizeAPI_.xml']
+  $km_deployment_configs  = ['conf/tenant-mgt.xml.erb']
 
 }
 
@@ -145,6 +164,7 @@ include km_deploy
 include store_deploy
 include publisher_deploy
 include gw_deploy
+include create_loadblnc_conf_configs
 
 }
 
@@ -169,9 +189,6 @@ class store_deploy inherits params{
 
 class gw_deploy inherits params {
 
-      $gw_manager_nodes = inline_template("<%= @gw_manager_hosts.length %>") #To determine number of manager nodes
-      $gw_worker_nodes = inline_template("<%= @gw_worker_hosts.length %>") #To determine number of manager nodes
-
     # Configuring Manager Nodes
       loop{"101":
         count=>$gw_manager_nodes+100,
@@ -187,17 +204,12 @@ class gw_deploy inherits params {
         count=>$gw_worker_nodes+$newval2-1,
         setupnode => "gw-worker",
         deduct => $newval2-1
-
       }
-
 }
 
 class km_deploy inherits params {
 
-    $km_manager_nodes = inline_template("<%= @km_manager_hosts.length %>") #To determine number of manager nodes
-    $km_worker_nodes = inline_template("<%= @km_worker_hosts.length %>") #To determine number of manager nodes
-
-    # Configuring Manager Nodes
+   # Configuring Manager Nodes
     loop{"1":
       count=>$km_manager_nodes,
       setupnode => "km-manager",
@@ -214,11 +226,24 @@ class km_deploy inherits params {
       deduct => $newval-1
 
       }
+}
 
+class create_loadblnc_conf_configs inherits params {
+
+ file {"${params::deployment_target}/elb-configs":
+  ensure => directory;
+  }
+
+  file {"${params::deployment_target}/elb-configs/load_balancer_configs.xml":
+
+    ensure => present,
+    mode    => '0755',
+    content => template("${params::script_base_dir}/templates/elb/load_balancer_configs.xml.erb"),
+    require => File["${params::deployment_target}/elb-configs"],
+  }
 }
 
 # Loop for Spawning Members
-
 define loop($count,$setupnode,$deduct) {
 
   if ($name > $count) {
@@ -263,7 +288,6 @@ define loop($count,$setupnode,$deduct) {
       nodes => $setupnode
     }
 
-
     if($setupnode == "gw-manager"){
 
      $local_names2 = regsubst($params::gate_way_deployment_configs, '$', "-$name")
@@ -272,8 +296,17 @@ define loop($count,$setupnode,$deduct) {
         node_number => $number,
         nodes => $setupnode
       }
-
 }
+
+    /*if($setupnode == "km-manager"){
+
+      $local_names3 = regsubst($params::km_deployment_configs, '$', "-$name")
+
+      pushTemplates {$local_names3:
+        node_number => $number,
+        nodes => $setupnode
+      }
+    }*/
 
   $next = $name + 1
     loop { $next:
@@ -311,9 +344,7 @@ define pushTemplates($node_number,$nodes) {
   }
 }
 
-
 # Package dependencies
 package { 'rsync': ensure => 'installed' }
 
 include deploy
-#package{'rsync2':}
