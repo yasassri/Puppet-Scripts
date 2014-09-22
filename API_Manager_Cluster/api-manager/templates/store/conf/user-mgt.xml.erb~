@@ -18,10 +18,10 @@
     <Realm>
         <Configuration>
 		<AddAdmin>true</AddAdmin>
-                <AdminRole>admin</AdminRole>
+                <AdminRole><%= @admin_role_name %></AdminRole>
                 <AdminUser>
-                     <UserName>admin</UserName>
-                     <Password>admin</Password>
+                     <UserName><%= @admin_user_name %></UserName>
+                     <Password><%= @admin_passwd %></Password>
                 </AdminUser>
             <EveryOneRoleName>everyone</EveryOneRoleName> <!-- By default users in this role sees the registry root -->
             <Property name="dataSource">jdbc/WSO2UM_DB</Property>
@@ -94,6 +94,50 @@
 	    <Property name="SharedGroupEnabled">false</Property>
             <Property name="SCIMEnabled">false</Property>
         </UserStoreManager>
+
+        <!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ReadWriteLDAPUserStoreManager">
+            <Property name="TenantManager">org.wso2.carbon.user.core.tenant.CommonHybridLDAPTenantManager</Property>
+            <Property name="ConnectionURL">ldap://192.168.18.76:389</Property>
+            <Property name="Disabled">false</Property>
+            <Property name="ConnectionName">cn=admin,dc=ITIndustry,dc=sl</Property>
+            <Property name="ConnectionPassword">secret</Property>
+            <Property name="passwordHashMethod">PLAIN_TEXT</Property>
+            <Property name="UserNameListFilter">(objectClass=person)</Property>
+            <Property name="UserEntryObjectClass">inetOrgPerson</Property>
+            <Property name="UserSearchBase">ou=People,ou=WSO2,o=Opensource,dc=ITIndustry,dc=sl</Property>
+            <Property name="UserNameSearchFilter">(&amp;(objectClass=person)(uid=?))</Property>
+            <Property name="UserNameAttribute">uid</Property>
+            <Property name="UsernameJavaRegEx">[a-zA-Z0-9._-|//]{3,30}$</Property>
+            <Property name="UsernameJavaScriptRegEx">^[\S]{3,30}$</Property>
+            <Property name="RolenameJavaScriptRegEx">^[\S]{3,30}$</Property>
+            <Property name="RolenameJavaRegEx">[a-zA-Z0-9._-|//]{3,30}$</Property>
+            <Property name="PasswordJavaScriptRegEx">^[\S]{5,30}$</Property>
+            <Property name="ReadGroups">true</Property>
+            <Property name="WriteGroups">true</Property>
+            <Property name="EmptyRolesAllowed">false</Property>
+            <Property name="GroupSearchBase">ou=Groups,ou=WSO2,o=Opensource,dc=ITIndustry,dc=sl</Property>
+            <Property name="GroupNameListFilter">(objectClass=groupOfNames)</Property>
+            <Property name="GroupEntryObjectClass">groupOfNames</Property>
+            <Property name="GroupNameSearchFilter">(&amp;(objectClass=groupOfNames)(cn=?))</Property>
+            <Property name="GroupNameAttribute">cn</Property>
+            <Property name="SharedGroupNameAttribute">cn</Property>
+            <Property name="SharedGroupSearchBase">ou=SharedGroups,ou=WSO2,o=Opensource,dc=ITIndustry,dc=sl</Property>
+            <Property name="SharedGroupEntryObjectClass">groupOfNames</Property>
+            <Property name="SharedGroupNameListFilter">(objectClass=groupOfNames)</Property>
+            <Property name="SharedGroupNameSearchFilter">(&amp;(objectClass=groupOfNames)(cn=?))</Property>
+            <Property name="SharedTenantNameListFilter">(objectClass=organizationalUnit)</Property>
+            <Property name="SharedTenantNameAttribute">ou</Property>
+            <Property name="SharedTenantObjectClass">organizationalUnit</Property>
+            <Property name="MembershipAttribute">member</Property>
+            <Property name="UserRolesCacheEnabled">true</Property>
+            <Property name="ReplaceEscapeCharactersAtUserLogin">true</Property>
+            <Property name="MaxRoleNameListLength">100</Property>
+            <Property name="MaxUserNameListLength">100</Property>
+            <Property name="SCIMEnabled">false</Property>
+       <Property name="UserDNPattern">uid={0},ou=People,ou=WSO2,o=Opensource,dc=ITIndustry,dc=sl</Property>
+	    <Property name="RoleDNPattern">cn={0},ou=Groups,ou=WSO2,o=Opensource,dc=ITIndustry,dc=sl</Property>
+ </UserStoreManager-->
+
 	
 	<!-- If product is using an external LDAP as the user store in READ ONLY mode, use following user manager.
 		In case if user core cache domain is needed to identify uniquely set property <Property name="UserCoreCacheIdentifier">domain</Property>
