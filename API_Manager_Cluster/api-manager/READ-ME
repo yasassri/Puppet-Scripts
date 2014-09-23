@@ -1,6 +1,7 @@
 READ-ME.
 
 What the script can do.
+---------------------
 
 The script can spawn ELB fronted API-M cluster with any number of GW and KM worker/manager nodes.
 Supports both mysql and Oracle DB types.
