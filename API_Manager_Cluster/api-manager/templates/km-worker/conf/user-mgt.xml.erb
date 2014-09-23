@@ -70,7 +70,8 @@
         </UserStoreManager-->
 
 	<!-- Following is the configuration for internal JDBC user store. This user store manager is based on JDBC. In case if application needs to manage 		     passwords externally set property <Property name="PasswordsExternallyManaged">true</Property>. In case if user core cache domain is needed to 			identify uniquely set property <Property name="UserCoreCacheIdentifier">domain</Property>. Furthermore properties, IsEmailUserName and 	     			DomainCalculation are readonly properties. 
-	     Note: Do not comment within UserStoreManager tags. Cause, specific tag names are used as tokens when building configurations for products. -->	
+	     Note: Do not comment within UserStoreManager tags. Cause, specific tag names are used as tokens when building configurations for products. -->
+	<% if @connect_to_ldap==true %><!--<%end%>	
         <UserStoreManager class="org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager">
             <Property name="TenantManager">org.wso2.carbon.user.core.tenant.JDBCTenantManager</Property>
 	    <Property name="ReadOnly">false</Property>
@@ -93,7 +94,7 @@
             <Property name="MaxUserNameListLength">100</Property>
 	    <Property name="SharedGroupEnabled">false</Property>
             <Property name="SCIMEnabled">false</Property>
-        </UserStoreManager>
+        </UserStoreManager><% if @connect_to_ldap==true %>--><%end%>
 
         <!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ReadWriteLDAPUserStoreManager">
             <Property name="TenantManager">org.wso2.carbon.user.core.tenant.CommonHybridLDAPTenantManager</Property>
@@ -230,9 +231,10 @@
 	<!-- If product is using an external LDAP as the user store in read/write mode, use following user manager 
 		In case if user core cache domain is needed to identify uniquely set property <Property name="UserCoreCacheIdentifier">domain</Property>
 	-->
-	<!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ReadWriteLDAPUserStoreManager">
+	<% if @connect_to_ldap==false %><!--<%end%>
+	<UserStoreManager class="org.wso2.carbon.user.core.ldap.ReadWriteLDAPUserStoreManager">
             <Property name="TenantManager">org.wso2.carbon.user.core.tenant.CommonHybridLDAPTenantManager</Property>
-            <Property name="ConnectionURL">ldap://localhost:10389</Property>
+            <Property name="ConnectionURL">ldap://<%= @ldap_url %>:<%= @ldap_port %></Property>
             <Property name="Disabled">false</Property>                       
             <Property name="ConnectionName">uid=admin,ou=system</Property>
             <Property name="ConnectionPassword">secret</Property>
@@ -269,7 +271,7 @@
             <Property name="MaxRoleNameListLength">100</Property>
             <Property name="MaxUserNameListLength">100</Property>
             <Property name="SCIMEnabled">false</Property>
-        </UserStoreManager-->
+        </UserStoreManager><% if @connect_to_ldap==false %>--><%end%>
 
 	<!-- Following user manager is used by Identity Server (IS) as its default user manager. 
 	     IS will do token replacement when building the product. Therefore do not change the syntax. 

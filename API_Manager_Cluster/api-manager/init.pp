@@ -153,7 +153,7 @@ class params {
 
   $configchanges = ['conf/datasources/master-datasources.xml','conf/carbon.xml','conf/registry.xml','conf/user-mgt.xml','conf/axis2/axis2.xml','conf/api-manager.xml',]
   $gate_way_deployment_configs = ['deployment/server/synapse-configs/default/api/_TokenAPI_.xml','deployment/server/synapse-configs/default/api/_RevokeAPI_.xml','deployment/server/synapse-configs/default/api/_AuthorizeAPI_.xml']
-  $km_deployment_configs  = ['conf/tenant-mgt.xml.erb']
+  $km_deployment_configs  = ['conf/tenant-mgt.xml']
 
 }
 
@@ -298,7 +298,7 @@ define loop($count,$setupnode,$deduct) {
       }
 }
 
-    /*if($setupnode == "km-manager"){
+    if($setupnode == "km-manager" or $setupnode == "km-worker"){
 
       $local_names3 = regsubst($params::km_deployment_configs, '$', "-$name")
 
@@ -306,7 +306,7 @@ define loop($count,$setupnode,$deduct) {
         node_number => $number,
         nodes => $setupnode
       }
-    }*/
+    }
 
   $next = $name + 1
     loop { $next:
