@@ -5,13 +5,12 @@ class params {
 
 # File Locations
   $deployment_target  = '/home/yasassri/Desktop/QA_Resources/puppet/DEPLOY/tsys'
-  $pack_location      = '/home/yasassri/Desktop/soft/WSO2_Products/ESB/esb48'
+  $pack_location      = '/home/yasassri/Desktop/soft/WSO2_Products/ESB/esb48' #ESB and ELB pack location the pacs has to be unzipped, make sure only the unzipped folders are in the directory
   $script_base_dir  = inline_template("<%= Dir.pwd %>") #location will be automatically picked up
 
 # MySQL configuration details
   $mysql_server         = 'localhost'
   $mysql_port           = '3306'
-
 
 # General Database details
 
@@ -49,8 +48,9 @@ class params {
 
   $elb_http_port = '8280'
   $elb_https_port = '8243'
+  $elb_port_offset  = "0"
 
-  #### Deployment Synchronizer ########
+  #### Deployment Synchronizer #######
 
   $dep_sync_enabled = false
   $svn_url  = "http://172.31.35.139/repos/tsys/ESB"
@@ -63,6 +63,7 @@ class params {
   $esb_worker_nodes = inline_template("<%= @esb_worker_hosts.length %>") #To determine number of worker nodes
 
   $configchanges = ['conf/datasources/master-datasources.xml','conf/carbon.xml','conf/registry.xml','conf/user-mgt.xml','conf/axis2/axis2.xml']
+  $elbconfigs     = ['conf/axis2/axis2.xml','conf/carbon.xml','conf/loadbalancer.conf']
 
 }
 
@@ -71,17 +72,44 @@ class deploy inherits params {
 
   include esb_deploy
   include create_loadblnc_conf_configs
+  include deploy_elb
 
 }
 
-class esb_deploy inherits params {
+class deploy_elb inherits params{
 
-# Configuring Manager Nodes
+  file {"${params::deployment_target}/elb-1":
+    ensure => directory;
+  }
+
+  exec { "Copying_elb-1":
+
+    path    => '/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin', # The search path used for command execution.
+    command => "cp -r ${params::pack_location}/wso2elb-*/* ${params::deployment_target}/elb-1/",
+    require => File["${params::deployment_target}/elb-1"],
+  }
+
+  copy_files{"Cpy_patches_elb-1":
+    from => "${params::script_base_dir}/libs/elb-patches/",
+    to   => "${params::deployment_target}/elb-1/repository/components/patches/",
+    node_name=> "elb-1",
+    unq_id=> "patches"
+  }
+
+  $local_names2 = regsubst($params::elbconfigs, '$', "-5000")
+
+  pushTemplates {$local_names2:
+    node_number => 1,
+    nodes => "elb"
+  }
+}
+
+class esb_deploy inherits params {
+ # Configuring Manager Nodes
   loop{"1":
     count=>$esb_manager_nodes,
     setupnode => "manager",
     deduct => 0
-
   }
 
 #Configuring worker Nodes
@@ -91,7 +119,6 @@ class esb_deploy inherits params {
     count=>$esb_worker_nodes+$newval-1,
     setupnode => "worker",
     deduct => $newval-1
-
   }
 }
 
@@ -191,6 +218,6 @@ define pushTemplates($node_number,$nodes) {
 }
 
 # Package dependencies
-package { 'rsync': ensure => 'installed' }
+package {'rsync': ensure => 'installed' }
 
 include deploy
