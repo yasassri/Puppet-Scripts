@@ -18,8 +18,9 @@ What the Script Cannot do
 How to run the Scripts
 -----------------------
 
-1.  Clone the repository.
-2.  Do the required changes in the esb_4.8.0_deploy.pp  file in the param class.<br>
+1.  Install puppet agent 3.X + (Puppet Master is not required)
+2.  Clone the repository.
+3.  Do the required changes in the esb_4.8.0_deploy.pp  file in the param class.<br>
   <i>Note : When specifying the product pack location make sure the product packs are unzipped and make sure the .zip files are not in the same directory.</i><br>
 3.  Specify what are the nodes that is required in the "deploy Class". For e.g:
     If you need to deploy all the nodes including ELB and ESB. the deploy class will look like following.
