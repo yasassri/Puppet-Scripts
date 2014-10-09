@@ -11,9 +11,9 @@ The script can deploy an ELB fronted ESB cluster. The user can specify the numbe
 What the Script Cannot do
 -------------------------
 
-->The script cannot create required DBs automatically.<br>
-->The script cannot Spawn nodes to remote machines. (This is feature will be added)
-->The script will not add required entried to to /etc/hosts File. 
+-The script cannot create required DBs automatically.<br>
+-The script cannot Spawn nodes to remote machines. (This is feature will be added)
+-The script will not add required entried to /etc/hosts File.
 
 How to run the Scripts
 -----------------------
