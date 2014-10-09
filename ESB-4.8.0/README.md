@@ -3,13 +3,13 @@ Puppet Scripts to Deploy ELB fronted ESB Cluster
 
 Applicable version : ESB 4.8.0 , ELB 2.1.1
 
-What the Script Does
---------------------
+What the Script can do
+----------------------
 
 The script can deploy an ELB fronted ESB cluster. The user can specify the number of worker manager nodes that are required, The script can deploy both ELB and ESB nodes. The deployment will use mysql configurations. 
 
-What the Script Can do
-----------------------
+What the Script Cannot do
+-------------------------
 
 ->The script cannot create required DBs automatically.<br>
 ->The script cannot Spawn nodes to remote machines. (This is feature will be added)
