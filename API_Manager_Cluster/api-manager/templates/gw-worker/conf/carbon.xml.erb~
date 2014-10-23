@@ -526,16 +526,18 @@
 	In master nodes you need to set both AutoCommit and AutoCheckout to true
 	and in  worker nodes set only AutoCheckout to true.
     -->
-    <!--<DeploymentSynchronizer>
+    <%if @dep_sync_enabled==false%><!--<%end%>
+    <DeploymentSynchronizer>
         <Enabled>true</Enabled>
-        <AutoCommit>false</AutoCommit>
+        <AutoCommit><% if @nodes=="gw-manager" %>true<%else%>false<%end%></AutoCommit>
         <AutoCheckout>true</AutoCheckout>
         <RepositoryType>svn</RepositoryType>
-        <SvnUrl>http://svnrepo.example.com/repos/</SvnUrl>
-        <SvnUser>username</SvnUser>
-        <SvnPassword>password</SvnPassword>
+        <SvnUrl><%= @svn_url %></SvnUrl>
+        <SvnUser><%= @svn_user_name %></SvnUser>
+        <SvnPassword><%= @svn_password %></SvnPassword>
         <SvnUrlAppendTenantId>true</SvnUrlAppendTenantId>
-    </DeploymentSynchronizer>-->
+    </DeploymentSynchronizer>
+    <%if @dep_sync_enabled==false%>--><%end%>
 
     <!-- Deployment Synchronizer Configuration. Uncomment the following section when running with "registry based" dep sync.
         In master nodes you need to set both AutoCommit and AutoCheckout to true

@@ -131,7 +131,7 @@
 			<!--
             			Server URL of the API gateway.
         		-->
-                        <ServerURL>https://<%= @gw_cluster_domain %>:<%= @cluster_port_https %>/services/</ServerURL>
+                        <ServerURL>https://<%= @gw_manager_hosts[0] %>:<%= @cluster_port_https %>/services/</ServerURL>
 			<!--
             			Admin username for the API gateway.
         		-->

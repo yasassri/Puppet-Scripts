@@ -42,7 +42,7 @@
        This is will become part of the End Point Reference of the
        services deployed on this server instance.
     -->
-   <HostName><% if @nodes=="km-manager" %><%= @km_manager_ips[@node_number.to_i-1] %><%else%><%= @km_worker_ips[@node_number.to_i-1] %><%end%></HostName>
+   <HostName><%= @km_manager_hosts[@node_number.to_i-1] %></HostName>
 
     <!--
     Host name to be used for the Carbon management console
@@ -526,16 +526,18 @@
 	In master nodes you need to set both AutoCommit and AutoCheckout to true
 	and in  worker nodes set only AutoCheckout to true.
     -->
-    <!--<DeploymentSynchronizer>
+    <!--
+    <DeploymentSynchronizer>
         <Enabled>true</Enabled>
-        <AutoCommit>false</AutoCommit>
+        <AutoCommit><% if @nodes=="km-manager" %>true<%else%>false<%end%></AutoCommit>
         <AutoCheckout>true</AutoCheckout>
         <RepositoryType>svn</RepositoryType>
-        <SvnUrl>http://svnrepo.example.com/repos/</SvnUrl>
-        <SvnUser>username</SvnUser>
-        <SvnPassword>password</SvnPassword>
+        <SvnUrl><%= @svn_url %></SvnUrl>
+        <SvnUser><%= @svn_user_name %></SvnUser>
+        <SvnPassword><%= @svn_password %></SvnPassword>
         <SvnUrlAppendTenantId>true</SvnUrlAppendTenantId>
-    </DeploymentSynchronizer>-->
+    </DeploymentSynchronizer>
+   	-->
 
     <!-- Deployment Synchronizer Configuration. Uncomment the following section when running with "registry based" dep sync.
         In master nodes you need to set both AutoCommit and AutoCheckout to true

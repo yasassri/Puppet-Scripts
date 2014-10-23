@@ -24,7 +24,7 @@
    <readOnly>false</readOnly>
    <enableCache>true</enableCache>
    <registryRoot>/</registryRoot>
-   <% if @db_type=="oracle"%><cacheId><%= @registry_db_username %>@jdbc:oracle:thin:@<%= @oracle_server %>:<%= @oracle_port %>/<%= @registry_db_name %></cacheId><% else %><cacheId><%= @registry_db_username %>@jdbc:mysql://<%= @mysql_server %>:<%= @mysql_port %>/<%= @registry_db_name %>?autoReconnect=true</cacheId><% end %>
+   <% if @db_type=="oracle"%><cacheId><%= @registry_db_username %>@jdbc:oracle:thin:@<%= @oracle_server %>:<%= @oracle_port %>/<%= @registry_db_name %></cacheId><% else %><cacheId><%= @registry_db_username %>@jdbc:mysql://<%= @mysql_server %>:<%= @mysql_port %>/<%= @registry_db_name %></cacheId><% end %>
 </remoteInstance>
 
 <mount path="/_system/governance" overwrite="true">
@@ -41,7 +41,7 @@
    <readOnly>false</readOnly>
    <enableCache>true</enableCache>
    <registryRoot>/</registryRoot>
-   <% if @db_type=="oracle"%><cacheId><%= @config_db_username %>@jdbc:oracle:thin:@<%= @oracle_server %>:<%= @oracle_port %>/<%= @config_registry_db_name %></cacheId><% else %><cacheId><%= @config_db_username %>@jdbc:mysql://<%= @mysql_server %>:<%= @mysql_port %>/<%= @config_registry_db_name %>?autoReconnect=true</cacheId><% end %>
+   <% if @db_type=="oracle"%><cacheId><%= @config_db_username %>@jdbc:oracle:thin:@<%= @oracle_server %>:<%= @oracle_port %>/<%= @config_registry_db_name %></cacheId><% else %><cacheId><%= @config_db_username %>@jdbc:mysql://<%= @mysql_server %>:<%= @mysql_port %>/<%= @config_registry_db_name %></cacheId><% end %>
 </remoteInstance>
 <mount path="/_system/config" overwrite="true">
    <instanceId>config</instanceId>

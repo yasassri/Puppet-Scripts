@@ -1,27 +1,13 @@
 
 #### Copy this comtent to load-balancer.cof file ######
-
 apimkm180 {
   domains{
      <%= @km_domain_name %> {
         tenant_range *;
         group_mgt_port <%= @elb_km_group_mgt_port %>;
-        #members 10.0.3.38:4910,10.0.3.49:4810;
         mgt {
- 
-         <% @km_manager_hosts.each_with_index do |mgthost, index| %>
-                  hosts <%= mgthost %>;
-	<% end %>
+         hosts <%= @km_manager_hosts[0] %>;
         }
-        
-         <% if @km_worker_nodes.to_i>0 %>
-        worker {
-        	<% @km_worker_hosts.each_with_index do |mgthost, index| %>
-                  hosts <%= mgthost %>;
-		<% end %>
-        }
-    <% end %>
-        
      }
    }
 }
@@ -31,18 +17,13 @@ apimgw180 {
      <%= @gw_domain_name %> {
         tenant_range *;
         group_mgt_port <%= @elb_gw_group_mgt_port %>;
-        #members 10.0.3.38:4710,10.0.3.49:4910;
         mgt {
-                <% @gw_manager_hosts.each_with_index do |mgthost, index| %>
-                  hosts <%= mgthost %>;
-		<% end %>
+                hosts <%= @gw_manager_hosts[0] %>;
         }
-        
+      
         <% if @gw_worker_nodes.to_i>0 %>
         worker {
-        	<% @gw_worker_hosts.each_with_index do |mgthost, index| %>
-                  hosts <%= mgthost %>;
-		<% end %>
+        	hosts <%= @gw_worker_hosts[0] %>;
         }
     <% end %>
      }

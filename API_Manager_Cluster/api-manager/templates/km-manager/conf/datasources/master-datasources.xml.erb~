@@ -14,16 +14,17 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:h2:repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE</url>
-                    <username>wso2carbon</username>
-                    <password>wso2carbon</password>
-                    <driverClassName>org.h2.Driver</driverClassName>
-                    <maxActive>50</maxActive>
-                    <maxWait>60000</maxWait>
-                    <testOnBorrow>true</testOnBorrow>
-                    <validationQuery>SELECT 1</validationQuery>
-                    <validationInterval>30000</validationInterval>
-                </configuration>
+     		<url>jdbc:mysql://<%= @mysql_server %>:<%= @mysql_port%>/<%= @km_carbondb_names[@node_number.to_i-1] %>?autoReconnect=true</url> 
+                    <username><%= @km_carbondb_usernames[@node_number.to_i-1] %></username> 
+                    <password><%= @km_carbondb_passwords[@node_number.to_i-1] %></password> 
+     		<defaultAutoCommit>false</defaultAutoCommit>
+     		<driverClassName>com.mysql.jdbc.Driver</driverClassName>
+     		<maxActive>50</maxActive>
+     		<maxWait>60000</maxWait>
+     		<testOnBorrow>true</testOnBorrow>
+     		<validationQuery>SELECT 1</validationQuery>
+     		<validationInterval>30000</validationInterval>
+   		</configuration>
             </definition>
         </datasource>
 
@@ -153,7 +154,7 @@
                      <maxActive>50</maxActive>
                      <maxWait>60000</maxWait>
                      <testOnBorrow>false</testOnBorrow>
-                     <validationQuery>SELECT 1</validationQuery>
+                     <validationQuery>SELECT 1 FROM DUAL</validationQuery>
                      <validationInterval>30000</validationInterval>
                 </configuration>
               </definition>
@@ -175,7 +176,7 @@
                      <maxActive>50</maxActive>
                      <maxWait>60000</maxWait>
                      <testOnBorrow>false</testOnBorrow>
-                     <validationQuery>SELECT 1</validationQuery>
+                     <validationQuery>SELECT 1 FROM DUAL</validationQuery>
                      <validationInterval>30000</validationInterval>
                 </configuration>
             </definition>
@@ -189,15 +190,16 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    jdbc:h2:repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE
-                    <username>wso2carbon</username>
-                    <password>wso2carbon</password>
-                    <driverClassName>org.h2.Driver</driverClassName>
-                    <maxActive>50</maxActive>
-                    <maxWait>60000</maxWait>
-                    <testOnBorrow>true</testOnBorrow>
-                    <validationQuery>SELECT 1</validationQuery>
-                    <validationInterval>30000</validationInterval>
+                     <url>jdbc:oracle:thin:@<%= @oracle_server %>:<%= @oracle_port%>/<%= @km_carbondb_names[@node_number.to_i-1] %></url>
+                     <username><%= @km_carbondb_usernames[@node_number.to_i-1] %></username> 
+                     <password><%= @km_carbondb_passwords[@node_number.to_i-1] %></password> 
+                     <driverClassName>oracle.jdbc.driver.OracleDriver</driverClassName>
+                     <defaultAutoCommit>false</defaultAutoCommit>
+                     <maxActive>50</maxActive>
+                     <maxWait>60000</maxWait>
+                     <testOnBorrow>false</testOnBorrow>
+                     <validationQuery>SELECT 1 FROM DUAL</validationQuery>
+                     <validationInterval>30000</validationInterval>
                 </configuration>
             </definition>
         </datasource>
@@ -218,7 +220,7 @@
                      <maxActive>50</maxActive>
                      <maxWait>60000</maxWait>
                      <testOnBorrow>false</testOnBorrow>
-                     <validationQuery>SELECT 1</validationQuery>
+                     <validationQuery>SELECT 1 FROM DUAL</validationQuery>
                      <validationInterval>30000</validationInterval>
                 </configuration>
             </definition>
@@ -240,7 +242,7 @@
                      <maxActive>50</maxActive>
                      <maxWait>60000</maxWait>
                      <testOnBorrow>false</testOnBorrow>
-                     <validationQuery>SELECT 1</validationQuery>
+                     <validationQuery>SELECT 1 FROM DUAL</validationQuery>
                      <validationInterval>30000</validationInterval>
                 </configuration>
             </definition>
@@ -262,7 +264,7 @@
                      <maxActive>50</maxActive>
                      <maxWait>60000</maxWait>
                      <testOnBorrow>false</testOnBorrow>
-                     <validationQuery>SELECT 1</validationQuery>
+                     <validationQuery>SELECT 1 FROM DUAL</validationQuery>
                      <validationInterval>30000</validationInterval>
                 </configuration>
             </definition>
