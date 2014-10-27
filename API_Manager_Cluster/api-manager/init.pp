@@ -5,7 +5,7 @@ class params {
 # General Settings
 
 # File Locations
-  $deployment_target  = '/home/yasassri/Desktop/QA_Resources/puppet/DEPLOY/APMTEST'
+  $deployment_target  = '/home/yasassri/Desktop/QA_Resources/puppet/DEPLOY/LOCAL'
   $pack_location      = '/home/yasassri/Desktop/soft/WSO2_Products/API_Manager/new'
   $script_base_dir  = inline_template("<%= Dir.pwd %>") #location will be automatically picked up
 
@@ -85,7 +85,7 @@ class params {
  ################# Dep Sync Configs ###############
 
   $dep_sync_enabled = true
-  $svn_url = 'http://svnexample.wso2.com/svn/yasassri/apimpuppet'
+  $svn_url = 'http://svnexample.wso2.com/svn/yasassri/apimmyrepo/'
   $svn_user_name  = 'wso2'
   $svn_password   = 'wso2123'
 
@@ -114,13 +114,13 @@ class params {
 ######################################
 ##### GateWay Related Configs ########
 
+  $use_management_nodes_as_hybridNode = true
+
  # Manager Nodes Parameters,,,, only configure following if clustering true for the Gate Way
   $gw_manager_offsets            = ['2']
   $gw_manager_hosts              = ["apim.180.release.gw.manager.com"] # Number of Nodes are determined from the array length
   $gw_manager_ips                = ['10.100.5.112']
   $gw_manager_local_member_ports = ['4003']
-
-  #$gw_local_db_names             = []
 
 # Worker Nodes parameters
   $gw_worker_offsets = ['5','7']
@@ -161,6 +161,9 @@ class params {
   $cluster_port_https = "443" # elb listner Ports
   $cluster_port_http = "80"
 
+  $http_nio_port  = "81"      # For Request Handling
+  $https_nio_port = "444"
+
 
  ############BAM Server###################
 
@@ -184,9 +187,9 @@ class params {
   $km_worker_nodes = inline_template("<%= @km_worker_hosts.length %>") #To determine number of worker nodes
 
 
-  $configchanges = ['conf/datasources/master-datasources.xml','conf/carbon.xml','conf/registry.xml','conf/user-mgt.xml','conf/axis2/axis2.xml','conf/api-manager.xml',]
-  $gate_way_deployment_configs = ['deployment/server/synapse-configs/default/api/_TokenAPI_.xml','deployment/server/synapse-configs/default/api/_RevokeAPI_.xml','deployment/server/synapse-configs/default/api/_AuthorizeAPI_.xml']
-  $km_deployment_configs  = ['conf/tenant-mgt.xml']
+  $configchanges = ['repository/conf/datasources/master-datasources.xml','repository/conf/carbon.xml','repository/conf/registry.xml','repository/conf/user-mgt.xml','repository/conf/axis2/axis2.xml','repository/conf/api-manager.xml','bin/wso2server.sh']
+  $gate_way_deployment_configs = ['repository/deployment/server/synapse-configs/default/api/_TokenAPI_.xml','repository/deployment/server/synapse-configs/default/api/_RevokeAPI_.xml','repository/deployment/server/synapse-configs/default/api/_AuthorizeAPI_.xml']
+  $km_deployment_configs  = ['repository/conf/tenant-mgt.xml']
 
 }
 
@@ -381,7 +384,7 @@ define pushTemplates($node_number,$nodes) {
 
   $orig_name = regsubst($name, '-[0-9]+$', '')
 
-  file {"$params::deployment_target/${nodes}-${node_number}/repository/${orig_name}":
+  file {"$params::deployment_target/${nodes}-${node_number}/${orig_name}":
 
     ensure => present,
     mode    => '0755',
