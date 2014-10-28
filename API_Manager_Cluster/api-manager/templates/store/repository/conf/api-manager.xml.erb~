@@ -260,7 +260,7 @@
         -ThriftServerHost - Allows to configure a hostname for the thrift server. It uses the carbon hostname by default.
         -->
 
-        <KeyValidatorClientType>ThriftClient</KeyValidatorClientType>
+        <KeyValidatorClientType>WSClient</KeyValidatorClientType>
         <ThriftClientPort>10397</ThriftClientPort>
         <ThriftClientConnectionTimeOut>10000</ThriftClientConnectionTimeOut>
         <ThriftServerPort>10397</ThriftServerPort>
@@ -366,7 +366,7 @@
 
     <APIPublisher>
         <DisplayURL>false</DisplayURL>
-        <URL><URL>https://<%= @pub_store_domain %>:<%= @cluster_port_https %>/publisher</URL></URL>
+        <URL>https://<%= @publisher_hosts[0] %>:<%= @cluster_port_https %>/publisher</URL>
         <!--
                This parameter specifies enabling the capability of setting API documentation level granular visibility levels.
                By default any document associate with an API will have the same permissions set as the API.With enabling below

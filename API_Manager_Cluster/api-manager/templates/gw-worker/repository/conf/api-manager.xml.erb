@@ -48,7 +48,7 @@
         <!--
             Server URL of the Authentication service
         -->
-        <ServerURL>https://<%= @km_cluster_domain %>:<%= @cluster_port_https %>/services/</ServerURL>
+        <ServerURL>https://<%= @km_manager_hosts[0] %>:<%= @cluster_port_https %>/services/</ServerURL>
         <!--
             Admin username for the Authentication manager.
         -->

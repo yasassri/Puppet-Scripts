@@ -48,7 +48,7 @@
         <!--
             Server URL of the Authentication service
         -->
-        <ServerURL><%= @km_cluster_domain %>:<%= @cluster_port_https %>/services/</ServerURL>
+        <ServerURL><%= @km_manager_hosts[0] %>:<%= @cluster_port_https %>/services/</ServerURL>
 
         <!--
             Admin username for the Authentication manager.
@@ -135,11 +135,11 @@
 			<!--
             			Admin username for the API gateway.
         		-->
-                        <Username><%= @admin_user_name %></Username>
+                        <Username>admin</Username>
 			<!--
             			Admin password for the API gateway.
         		-->
-                        <Password><%= @admin_passwd %></Password>
+                        <Password>admin</Password>
 			<!--
             			Endpoint URLs for the APIs hosted in this API gateway.
         		-->
@@ -230,17 +230,17 @@
         <!--
             Server URL of the API key manager
         -->
-        <ServerURL>https://<%= @km_cluster_domain %>:<%= @cluster_port_https %>/services/</ServerURL>
+        <ServerURL>https://${carbon.local.ip}:${mgt.transport.https.port}${carbon.context}/services/</ServerURL>
 
         <!--
             Admin username for API key manager.
         -->
-        <Username><%= @admin_user_name %></Username>
+        <Username>admin</Username>
 
         <!--
             Admin password for API key manager.
         -->
-        <Password><%= @admin_passwd %></Password>
+        <Password>admin</Password>
         <!--
             Enable/Disable JWT caching.
         -->
@@ -286,7 +286,7 @@
 	     In distributed deployment we should configure this property in key manager node by pointing
 	     gateway https url. Also please note that we should point gateway revoke service to key manager
 	-->
-	<RevokeAPIURL>https://<%= @gw_cluster_domain %>:<%= @https_nio_port %>/revoke</RevokeAPIURL>
+	<RevokeAPIURL>https://<%= @gw_worker_hosts[0] %>:<%= @https_nio_port %>/revoke</RevokeAPIURL>
 
 	<!-- Whether to encrypt tokens when storing in the Database
 	Note: If changing this value to true, change the value of <TokenPersistenceProcessor> to

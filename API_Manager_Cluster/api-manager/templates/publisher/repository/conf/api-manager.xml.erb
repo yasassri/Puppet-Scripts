@@ -229,17 +229,17 @@
         <!--
             Server URL of the API key manager
         -->
-        <ServerURL>https://<%= @km_cluster_domain %>:<%= @cluster_port_https %>/services/</ServerURL>
+        <ServerURL>https://${carbon.local.ip}:${mgt.transport.https.port}${carbon.context}/services/</ServerURL>
 
         <!--
             Admin username for API key manager.
         -->
-        <Username><%= @admin_user_name %></Username>
+        <Username>admin</Username>
 
         <!--
             Admin password for API key manager.
         -->
-        <Password><%= @admin_passwd %></Password>
+        <Password>admin</Password>
         <!--
             Enable/Disable JWT caching.
         -->
@@ -366,7 +366,7 @@
 
     <APIPublisher>
         <DisplayURL>false</DisplayURL>
-        <URL><URL>https://<%= @pub_store_domain %>:<%= @cluster_port_https %>/publisher</URL></URL>
+        <URL>https://${carbon.local.ip}:${mgt.transport.https.port}/publisher</URL>
         <!--
                This parameter specifies enabling the capability of setting API documentation level granular visibility levels.
                By default any document associate with an API will have the same permissions set as the API.With enabling below

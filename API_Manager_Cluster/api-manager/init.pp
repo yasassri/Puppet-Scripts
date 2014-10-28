@@ -105,12 +105,6 @@ class params {
   $km_manager_ips                 = ['10.100.5.112','10.100.5.112']
   $km_manager_local_member_ports  = ['4001','4007']
 
-  # Worker Nodes parameters
-  $km_worker_offsets            = ['6']
-  $km_worker_hosts              = [] # Number of Nodes are determined from the array length
-  $km_worker_ips                = ['10.100.5.112']
-  $km_worker_local_member_ports = ['4007']
-
 ######################################
 ##### GateWay Related Configs ########
 
@@ -184,7 +178,6 @@ class params {
   $gw_manager_nodes = inline_template("<%= @gw_manager_hosts.length %>") #To determine number of manager nodes
   $gw_worker_nodes = inline_template("<%= @gw_worker_hosts.length %>") #To determine number of gw worker nodes
   $km_manager_nodes = inline_template("<%= @km_manager_hosts.length %>") #To determine number of manager nodes
-  $km_worker_nodes = inline_template("<%= @km_worker_hosts.length %>") #To determine number of worker nodes
 
 
   $configchanges = ['repository/conf/datasources/master-datasources.xml','repository/conf/carbon.xml','repository/conf/registry.xml','repository/conf/user-mgt.xml','repository/conf/axis2/axis2.xml','repository/conf/api-manager.xml','bin/wso2server.sh']
@@ -250,18 +243,7 @@ class km_deploy inherits params {
       count=>$km_manager_nodes,
       setupnode => "km-manager",
       deduct => 0
-
     }
-
-    #Configuring worker Nodes
-    $newval= $km_manager_nodes+2 #to avoid resource duplication
-
-    loop {$newval:
-      count=>$km_worker_nodes+$newval-1,
-      setupnode => "km-worker",
-      deduct => $newval-1
-
-      }
 }
 
 class create_loadblnc_conf_configs inherits params {
