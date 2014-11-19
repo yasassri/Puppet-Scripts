@@ -5,7 +5,7 @@ class params {
 # General Settings
 
 # File Locations
-  $deployment_target  = '/home/yasassri/Desktop/QA_Resources/puppet/DEPLOY/LOCAL'
+  $deployment_target  = '/home/yasassri/Desktop/QA_Resources/puppet/DEPLOY/LOCAL2'
   $pack_location      = '/home/yasassri/Desktop/soft/WSO2_Products/API_Manager/new'
   $script_base_dir  = inline_template("<%= Dir.pwd %>") #location will be automatically picked up
 
@@ -13,12 +13,12 @@ class params {
   $db_type = "mysql" #add keyword "oracle" or "mysql"
 
 # MySQL configuration details
-  $mysql_server         = 'localhost'
+  $mysql_server         = '192.168.18.76'
   $mysql_port           = '3306'
 
 # Oracle DB detailes
   $oracle_server         = '192.168.10'
-  $oracle_port           = '3306'
+  $oracle_port           = '1521'
 
 # General Database details
 
@@ -56,7 +56,7 @@ class params {
   $gw_manager_carbondb_usernames  = ['apimuser2']
   $gw_manager_carbondb_passwords  = ['wso2root']
 
-  $gw_worker_carbondb_names  = ['gwwrk1carbondb','gwwrk2carbondb']
+  $gw_worker_carbondb_names  = ['gwwrk1carbondb','gwwrk2carbondb'] # If there are multiple nodes specify inline
   $gw_worker_carbondb_usernames  = ['apimuser2','apimuser2']
   $gw_worker_carbondb_passwords  = ['wso2root','wso2root']
 
@@ -85,7 +85,7 @@ class params {
  ################# Dep Sync Configs ###############
 
   $dep_sync_enabled = true
-  $svn_url = 'http://svnexample.wso2.com/svn/yasassri/apimmyrepo/'
+  $svn_url = 'http://svnexample.wso2.com/svn/yasassri/apimmyrepocloud'
   $svn_user_name  = 'wso2'
   $svn_password   = 'wso2123'
 
@@ -102,7 +102,7 @@ class params {
   # Manager Nodes Parameters only configure following if clustering true for the KM
   $km_manager_offsets             = ['1','6']
   $km_manager_hosts               = ['apim.180.release.km.com','apim.180.release.km.com']
-  $km_manager_ips                 = ['10.100.5.112','10.100.5.112']
+  $km_manager_ips                 = ['192.168.18.74','10.100.5.112']
   $km_manager_local_member_ports  = ['4001','4007']
 
 ######################################
@@ -188,20 +188,17 @@ class params {
 
 # Deployment Class
 class deploy inherits params {
-
 include km_deploy
 include store_deploy
 include publisher_deploy
 include gw_deploy
 include create_loadblnc_conf_configs
-
 }
 
 class publisher_deploy inherits params {
 
  loop{"301":
     count=>301,
-
     setupnode => "publisher",
     deduct => 300
   }
@@ -294,17 +291,33 @@ define loop($count,$setupnode,$deduct) {
 
     # Copying Patches
     copy_files{"Cpy_patches_$setupnode-$number":
-    from => "${params::script_base_dir}/libs/patches/",
+    from => "${params::script_base_dir}/resources/patches/",
     to   => "${params::deployment_target}/$setupnode-$number/repository/components/patches/",
     node_name=> "$setupnode-$number",
     unq_id=> "patches"
           }
   # Copying DB Drivers
     copy_files{"Cpy_drivers_$setupnode-$number":
-      from => "${params::script_base_dir}/libs/db_drivers/",
+      from => "${params::script_base_dir}/resources/db_drivers/",
       to   => "${params::deployment_target}/$setupnode-$number/repository/components/lib/",
       node_name=> "$setupnode-$number",
       unq_id=> "db_drivers"
+    }
+
+  # Copying svn client jar
+    copy_files{"Cpy_svnclient_$setupnode-$number":
+      from => "${params::script_base_dir}/resources/svnjars/lib/",
+      to   => "${params::deployment_target}/$setupnode-$number/repository/components/lib/",
+      node_name=> "$setupnode-$number",
+      unq_id=> "svnclient_drivers"
+    }
+
+  # Copying SVN ssh jar
+    copy_files{"Cpy_svnssh_$setupnode-$number":
+      from => "${params::script_base_dir}/resources/svnjars/dropins/",
+      to   => "${params::deployment_target}/$setupnode-$number/repository/components/dropins/",
+      node_name=> "$setupnode-$number",
+      unq_id=> "svnssh_drivers"
     }
 
    $local_names = regsubst($params::configchanges, '$', "-$name")
@@ -356,7 +369,6 @@ define copy_files($from,$to,$node_name,$unq_id){
     command => "rsync -r $from $to",
     require => [
       File["${params::deployment_target}/$node_name"],
-      Package['rsync'],
       Exec["Copying_$node_name"]
     ],
   }
@@ -413,8 +425,5 @@ define remote_copy_start_servers($remote_ip,$user_name,$node_name,$node_number){
     }
   }
 }
-
-# Package dependencies
-package { 'rsync': ensure => 'installed' }
 
 include deploy
