@@ -2,9 +2,15 @@
     <resource methods="POST" url-mapping="/*" faultSequence="_token_fault_">
         <inSequence>
 
+            <property name="uri.var.portnum" expression="get-property('mgtHttpsPort')"/>
             <send>
                 <endpoint>
-                    <address uri="https://<%= @km_manager_hosts[0] %>:<%= @cluster_port_https %>/oauth2/revoke"/>
+                    <http uri-template="https://<%= @km_manager_hosts[0] %>:<%= @cluster_port_https %>/oauth2/revoke">
+                        <timeout>
+                            <duration>60000</duration>
+                            <responseAction>fault</responseAction>
+                        </timeout>
+                    </http>
                 </endpoint>
             </send>
         </inSequence>
@@ -14,5 +20,6 @@
     </resource>
     <handlers>
         <handler class="org.wso2.carbon.apimgt.gateway.handlers.ext.APIManagerCacheExtensionHandler"/>
+        <handler class="org.wso2.carbon.apimgt.gateway.handlers.common.SynapsePropertiesHandler"/>
     </handlers>
 </api>

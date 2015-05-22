@@ -96,6 +96,12 @@
 	-->
 	<!--EnableTokenGeneration>false</EnableTokenGeneration-->
 
+        <!--
+            This parameter specifies which implementation should be used for generating the Token. JWTGenerator is the
+	    default implementation provided.
+	 -->
+	<TokenGeneratorImpl>org.wso2.carbon.apimgt.impl.token.JWTGenerator</TokenGeneratorImpl>
+
 	<!--
 		Remove OAuth headers from outgoing message or keep with it.
 	-->
@@ -458,6 +464,9 @@
 	<!--The value of the Access-Control-Allow-Origin header. Default values are
 	    API Store addresses, which is needed for swagger to function.-->
 	<Access-Control-Allow-Origin>*</Access-Control-Allow-Origin>
+
+	<!--Configure Access-Control-Allow-Methods-->
+	<Access-Control-Allow-Methods>GET,PUT,POST,DELETE,OPTIONS</Access-Control-Allow-Methods>
 
 	<!--Configure Access-Control-Allow-Headers-->
 	<Access-Control-Allow-Headers>authorization,Access-Control-Allow-Origin,Content-Type</Access-Control-Allow-Headers>
